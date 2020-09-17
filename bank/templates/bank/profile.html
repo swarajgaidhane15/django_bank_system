@@ -7,25 +7,25 @@
                 <tbody>
                     <tr>
                         <td>Name</td>
-                        <td>{{user.first_name}} {{ user.last_name }}</td>
+                        <td>{{object.first_name}} {{ object.last_name }}</td>
                     </tr>
                     <tr>
                         <td>Account Number</td>
-                        <td>xxxxxxxxxx{{user.profile.account_number}}</td>
+                        <td>xxxxxxxxxx{{object.profile.account_number}}</td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td>{{ user.email }}</td>
+                        <td>{{ object.email }}</td>
                     </tr>
                     <tr>
                         <td>Date Joined</td>
-                        <td>{{ user.date_joined|date:"F j, Y" }}</td>
+                        <td>{{ object.date_joined|date:"F j, Y" }}</td>
                     </tr>
                 </tbody>
             </table>
             <br><br>
         </div>
         <button class="btn btn-primary mr-3" ><a href="{% url "bank:update_profile" %}" style="text-decoration: none; color: #000;">Update Profile</a></button>
-        <button class="btn btn-warning" ><a href="{% url "bank:transactions" pk=user.id %}" style="text-decoration: none; color: #000;">Go to banking</a></button>
+        <button class="btn btn-warning" ><a href="{% url "bank:transactions" pk=object.id %}" style="text-decoration: none; color: #000;">Go to banking</a></button>
     </div>
 {% endblock content %}

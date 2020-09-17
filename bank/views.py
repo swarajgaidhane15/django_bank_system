@@ -1,19 +1,21 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .models import Profile, Transaction
-from django.contrib.auth.models import User
 from .forms import NewUserForm, EditProfile, AddTransaction
 
 
 # Displays the transactions of the logged in account
-@login_required
-def transactions(request, pk):
-    return render(request, "bank/transactions.html", {"transactions": Transaction.objects.filter(account=pk)})
+class TransactionsList(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = "bank/transactions.html"
+    context_object_name = "transactions"
+    ordering = ["-trans_date"]
 
 
 # Details of logged in user
@@ -102,25 +104,4 @@ def register(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully !!")
-    return redirect("bank:profile")
-
-
-# Login user
-def login_request(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}")
-                return redirect("bank:profile")
-            else:
-                messages.error(request, "Invalid credentials")
-        else:
-            messages.error(request, "Improper credentials")
-
-    form = AuthenticationForm()
-    return render(request, "bank/login.html", {"form": form})
+    return redirect("bank:login")
