@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h4 class="navbar-brand" href="#">My Bank</h4>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      {% if user.is_authenticated %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/">{{ user.first_name }}</a>
+            </li>          
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'bank:logout' %}">Logout</a>
+            </li>      
+      {% else %}
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'bank:register' %}">Register</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="bank:login">Login</a>
+            </li>
+      {% endif %}
+      
+    </ul>
+  </div>
+</nav>

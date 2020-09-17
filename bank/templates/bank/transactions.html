@@ -1,0 +1,40 @@
+{% extends 'bank/home.html' %}
+{% block content %}
+
+    <div class="container">
+        <div class="text-center">
+            <a href="{% url "bank:create_trans" user_id=user.id %}"><button class="btn btn-outline-primary p-2"><strong>Create Transaction</strong></button></a>
+        </div>
+        <br><br>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trans in transactions %}
+                    <tr>
+                        <td>{{trans.id}}</td>
+                        <td>{{trans.description}}</td>
+                        <td>{{trans.amount}}</td>
+                        <td>{{trans.trans_date}}</td>
+                        <td>{{trans.trans_type}}</td>
+                        <td>
+                            <a href="{% url 'bank:delete_trans' trans.id %}">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+    </div>
+
+{% endblock content %}
+
