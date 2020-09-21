@@ -11,6 +11,11 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Login</button>
+                <small class="text-muted">
+                    <a class="ml-3" href="{% url 'bank:password_reset' %}">
+                        <strong>Forgot Password?</strong>
+                    </a>
+                </small>
             </div>
         </form>
         <div class="border-top pt-3">

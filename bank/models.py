@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 import random
@@ -45,3 +46,20 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.description
+
+    def get_absolute_url(self):
+        return reverse("bank:profile")
+
+    def save(self, *args, **kwargs):
+        if self.trans_type == 'Withdraw':
+            self.account.profile.account_balance -= self.amount
+        else:
+            self.account.profile.account_balance += self.amount
+        self.account.save()
+        # Call the real save() method
+        super(Transaction, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.account.profile.account_balance -= self.amount
+        self.account.save()
+        super(Transaction, self).delete(*args, **kwargs)

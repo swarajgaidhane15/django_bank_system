@@ -1,19 +1,14 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import Profile, Transaction
-from django.contrib.auth.models import User
 from .forms import NewUserForm, EditProfile, AddTransaction
-
-
-# Displays the transactions of the logged in account
-@login_required
-def transactions(request, pk):
-    return render(request, "bank/transactions.html", {"transactions": Transaction.objects.filter(account=pk)})
 
 
 # Details of logged in user
@@ -40,31 +35,23 @@ def update_profile(request):
     return render(request, "bank/update_profile.html", {"form": user_form})
 
 
-# Add Transaction
+# Displays the transactions of the logged in account
 @login_required
-def add_trans(request, user_id):
-    user = User.objects.get(pk=user_id)
-    if request.method == 'POST':
-        add_form = AddTransaction(request.POST)
-        if add_form.is_valid():
-            create_trans = add_form.save(commit=False)
-            create_trans.account = user
-            amount = add_form.cleaned_data.get('amount')
-            trans_type = add_form.cleaned_data.get('trans_type')
-            if trans_type == 'Withdraw':
-                user.profile.account_balance -= amount
-            else:
-                user.profile.account_balance += amount
-            create_trans.save()
-            messages.success(
-                request, f"Rs. {amount} have been {trans_type}ed !")
-            return redirect("bank:transactions", user_id)
-        else:
-            messages.info(request, "Please correct the errors below.")
-    else:
-        add_form = AddTransaction()
+def trasactionList(request, pk):
+    trans = Transaction.objects.filter(account=pk)
+    return render(request, "bank/transactions.html", {"transactions": trans})
 
-    return render(request, "bank/create_trans.html", {"form": add_form})
+
+# Add Transaction
+class AddTransaction(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Transaction
+    fields = ['amount', 'description', 'trans_type']
+    template_name = "bank/create_trans.html"
+    success_message = "Transaction made successfully"
+
+    def form_valid(self, form):
+        form.instance.account = self.request.user
+        return super().form_valid(form)
 
 
 # Delete a transaction
@@ -72,7 +59,7 @@ def add_trans(request, user_id):
 def delete_transaction(request, trans_id):
     trans = Transaction.objects.get(pk=trans_id)
     trans.delete()
-    return redirect("bank:profile")
+    return redirect("bank:transactions", request.user.id)
 
 
 # Register user
@@ -86,6 +73,8 @@ def register(request):
             messages.success(request, f"New account created: {username}")
             login(request, user)
             messages.info(request, f"You are now logged in as {username}")
+            messages.success(
+                request, f"Rs. 100 have been credited to your account as bonus : )")
             return redirect("bank:profile")
         else:
             for msg in form.error_messages:
@@ -102,25 +91,4 @@ def register(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully !!")
-    return redirect("bank:profile")
-
-
-# Login user
-def login_request(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}")
-                return redirect("bank:profile")
-            else:
-                messages.error(request, "Invalid credentials")
-        else:
-            messages.error(request, "Improper credentials")
-
-    form = AuthenticationForm()
-    return render(request, "bank/login.html", {"form": form})
+    return redirect("bank:login")

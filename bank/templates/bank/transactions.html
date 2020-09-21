@@ -3,10 +3,10 @@
 
     <div class="container">
         <div class="text-center">
-            <a href="{% url "bank:create_trans" user_id=user.id %}"><button class="btn btn-outline-primary p-2"><strong>Create Transaction</strong></button></a>
+            <a href="{% url "bank:create_trans" user.id %}"><button class="btn btn-outline-primary p-2"><strong>Create Transaction</strong></button></a>
         </div>
         <br><br>
-        <table class="table">
+        <table class="table table-responsive-sm" id="trans-table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Transaction ID</th>
