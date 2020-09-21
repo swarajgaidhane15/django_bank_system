@@ -1,21 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import Profile, Transaction
 from .forms import NewUserForm, EditProfile, AddTransaction
-
-
-# Displays the transactions of the logged in account
-class TransactionsList(LoginRequiredMixin, ListView):
-    model = Transaction
-    template_name = "bank/transactions.html"
-    context_object_name = "transactions"
-    ordering = ["-trans_date"]
 
 
 # Details of logged in user
@@ -42,31 +35,23 @@ def update_profile(request):
     return render(request, "bank/update_profile.html", {"form": user_form})
 
 
-# Add Transaction
+# Displays the transactions of the logged in account
 @login_required
-def add_trans(request, user_id):
-    user = User.objects.get(pk=user_id)
-    if request.method == 'POST':
-        add_form = AddTransaction(request.POST)
-        if add_form.is_valid():
-            create_trans = add_form.save(commit=False)
-            create_trans.account = user
-            amount = add_form.cleaned_data.get('amount')
-            trans_type = add_form.cleaned_data.get('trans_type')
-            if trans_type == 'Withdraw':
-                user.profile.account_balance -= amount
-            else:
-                user.profile.account_balance += amount
-            create_trans.save()
-            messages.success(
-                request, f"Rs. {amount} have been {trans_type}ed !")
-            return redirect("bank:transactions", user_id)
-        else:
-            messages.info(request, "Please correct the errors below.")
-    else:
-        add_form = AddTransaction()
+def trasactionList(request, pk):
+    trans = Transaction.objects.filter(account=pk)
+    return render(request, "bank/transactions.html", {"transactions": trans})
 
-    return render(request, "bank/create_trans.html", {"form": add_form})
+
+# Add Transaction
+class AddTransaction(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Transaction
+    fields = ['amount', 'description', 'trans_type']
+    template_name = "bank/create_trans.html"
+    success_message = "Transaction made successfully"
+
+    def form_valid(self, form):
+        form.instance.account = self.request.user
+        return super().form_valid(form)
 
 
 # Delete a transaction
@@ -74,7 +59,7 @@ def add_trans(request, user_id):
 def delete_transaction(request, trans_id):
     trans = Transaction.objects.get(pk=trans_id)
     trans.delete()
-    return redirect("bank:profile")
+    return redirect("bank:transactions", request.user.id)
 
 
 # Register user
@@ -88,6 +73,8 @@ def register(request):
             messages.success(request, f"New account created: {username}")
             login(request, user)
             messages.info(request, f"You are now logged in as {username}")
+            messages.success(
+                request, f"Rs. 100 have been credited to your account as bonus : )")
             return redirect("bank:profile")
         else:
             for msg in form.error_messages:
