@@ -21,12 +21,15 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8*(!x3%ma8zf_))z_=s79k%1gpclz@umjjnxjtwdj$6-&d2pqz'
+# SECRET_KEY = '8*(!x3%ma8zf_))z_=s79k%1gpclz@umjjnxjtwdj$6-&d2pqz'
+SECRET_KEY = os.environ.get('SECRET_KEY_BANK')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'my-bankmanager-app.herokuapp.com'
+]
 
 
 # Application definition
