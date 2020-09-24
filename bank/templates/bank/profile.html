@@ -29,7 +29,14 @@
             </table>
             <br><br>
         </div>
-        <button class="btn btn-primary mr-3" ><a href="{% url "bank:update_profile" %}" style="text-decoration: none; color: #000;">Update Profile</a></button>
-        <button class="btn btn-warning" ><a href="{% url "bank:transactions" user.id %}" style="text-decoration: none; color: #000;">Go to banking</a></button>
+        {% if user.is_active %}
+            <button class="btn btn-primary mr-3" >
+                <a href="{% url "bank:update_profile" %}" style="text-decoration: none; color: #000;">Update Profile</a>
+            </button>
+        {% endif %}
+
+        <button class="btn btn-warning" >
+            <a href="{% url "bank:transactions" user.id %}" style="text-decoration: none; color: #000;">Go to banking</a>
+        </button>
     </div>
 {% endblock content %}

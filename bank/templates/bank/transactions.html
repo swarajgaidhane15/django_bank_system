@@ -2,9 +2,15 @@
 {% block content %}
 
     <div class="container">
-        <div class="text-center">
-            <a href="{% url "bank:create_trans" user.id %}"><button class="btn btn-outline-primary p-2"><strong>Create Transaction</strong></button></a>
-        </div>
+        {% if user.id == main_user.id %}
+            <div class="text-center">
+                <a href="{% url "bank:create_trans" user.id %}">
+                    <button class="btn btn-outline-primary p-2">
+                        <strong>Create Transaction</strong>
+                    </button>
+                </a>
+            </div>
+        {% endif %}
         <br><br>
         <table class="table table-responsive-sm" id="trans-table">
             <thead class="thead-dark">

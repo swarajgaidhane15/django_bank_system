@@ -8,10 +8,15 @@
       {% if user.is_authenticated %}
             <li class="nav-item active">
                 <a class="nav-link" href="/">{{ user.first_name }}</a>
-            </li>          
+            </li>
+            {% if user.is_superuser %}
+                <li class="nav-item active float-right">
+                    <a class="nav-link" href="{% url 'bank:users' %}">All Users</a>
+                </li>
+            {% endif %}
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'bank:logout' %}">Logout</a>
-            </li>      
+            </li>
       {% else %}
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'bank:register' %}">Register</a>
@@ -20,7 +25,7 @@
                 <a class="nav-link" href="{% url 'bank:login' %}">Login</a>
             </li>
       {% endif %}
-      
+        
     </ul>
   </div>
 </nav>

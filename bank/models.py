@@ -40,7 +40,7 @@ class Transaction(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     description = models.CharField(max_length=20, default="N/A")
-    trans_date = models.DateTimeField(default=timezone.now())
+    trans_date = models.DateTimeField(default=timezone.now)
     trans_type = models.CharField(
         verbose_name="Transaction Type", max_length=20, choices=types, default="Deposit")
 

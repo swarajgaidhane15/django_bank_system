@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'bank'
 urlpatterns = [
     path('', views.profile, name="profile"),
+    path('users/', views.userlist, name="users"),
     path('update-profile/', views.update_profile, name="update_profile"),
     path('transactions/<int:pk>/', views.trasactionList, name="transactions"),
     path('<int:user_id>/create-trans/',

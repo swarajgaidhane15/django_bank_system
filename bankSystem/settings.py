@@ -26,7 +26,7 @@ SECRET_KEY = '8*(!x3%ma8zf_))z_=s79k%1gpclz@umjjnxjtwdj$6-&d2pqz'
 # SECRET_KEY = os.environ.get('SECRET_KEY_BANK')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'my-bankmanager-app.herokuapp.com',
@@ -37,13 +37,14 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'bank',
-    'crispy_forms', 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bank',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

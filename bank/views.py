@@ -11,6 +11,13 @@ from .models import Profile, Transaction
 from .forms import NewUserForm, EditProfile, AddTransaction
 
 
+# Display all users
+@login_required
+def userlist(request):
+    user_list = User.objects.all().order_by('first_name')
+    return render(request, "bank/users.html", {"users": user_list})
+
+
 # Details of logged in user
 @login_required
 def profile(request):
@@ -39,7 +46,8 @@ def update_profile(request):
 @login_required
 def trasactionList(request, pk):
     trans = Transaction.objects.filter(account=pk)
-    return render(request, "bank/transactions.html", {"transactions": trans})
+    main_user = User.objects.get(id=pk)
+    return render(request, "bank/transactions.html", {"transactions": trans, "main_user": main_user})
 
 
 # Add Transaction

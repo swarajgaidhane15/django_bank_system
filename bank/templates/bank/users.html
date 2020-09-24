@@ -1,0 +1,37 @@
+{% extends 'bank/home.html' %}
+{% block content %}
+
+    <div class="container">
+        <br><br>
+        <table class="table table-responsive-sm" id="trans-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">User ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Account Number</th>
+                    <th scope="col">Date joined</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{user.id}}</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                        <td>{{user.profile.account_balance}}</td>
+                        <td>{{user.profile.account_number}}</td>
+                        <td>{{user.date_joined}}</td>
+                        <td>
+                            <a href="{% url 'bank:transactions' user.id %}">
+                                <button class="btn btn-sm btn-outline-info">View Transactions</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+    </div>
+
+{% endblock content %}
+
