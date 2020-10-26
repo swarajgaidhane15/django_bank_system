@@ -11,6 +11,7 @@ import random
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_no = models.CharField(max_length=12, blank=False)
     account_number = models.IntegerField(
         verbose_name="Account number", default=random.randint(100, 1000))
     account_balance = models.IntegerField(default=100)
@@ -18,6 +19,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def __getattr__(self, name):
+        return getattr(self.original, name)
 
 
 @receiver(post_save, sender=User)

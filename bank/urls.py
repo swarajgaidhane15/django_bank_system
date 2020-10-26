@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 from django.contrib.auth import views as auth_views
@@ -35,4 +35,9 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(
              template_name='bank/users/password_reset_complete.html'),
          name='password_reset_complete'),
+
+    # For OTP
+    re_path(r'^totp/create/$', views.TOTPCreateView.as_view(), name='totp-create'),
+    re_path(r'^totp/login/(?P<token>[0-9]{6})/$',
+            views.TOTPVerifyView.as_view(), name='totp-login'),
 ]

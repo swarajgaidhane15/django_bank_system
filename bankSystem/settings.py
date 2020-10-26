@@ -37,6 +37,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # 'phone_login',
+    'rest_framework',
+    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +48,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bank',
     'crispy_forms',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
+# AUTHENTICATION_BACKENDS = [
+#     'phone_login.backends.phone_backend.PhoneBackend',
+#     'django.contrib.auth.backends.ModelBackend'
+# ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -88,6 +108,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'bank_system',
+#         'USER': 'captain',
+#         'PASSWORD': 'america',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -145,3 +175,12 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 
 # django_heroku.settings(locals())
+ACCOUNT_USERNAME_REQUIRED = False
+
+# use django-phone-otp
+
+# (defaults to 'sendsms.backends.console.SmsBackend')
+# SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
+# SENDSMS_FROM_NUMBER = "+XXxxxxxxxxxx"
+# SENDSMS_ACCOUNT_SID = 'ACXXXXXXXXXXXXXX'
+# SENDSMS_AUTH_TOKEN = 'xxxxxxxx'

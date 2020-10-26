@@ -1,0 +1,9 @@
+# Send Request
+POST http://127.0.0.1:8000/register
+Content-Type: application/json
+
+{
+    "username": "John",
+    "email": "john@example.com",
+    "password": "1234"
+}
